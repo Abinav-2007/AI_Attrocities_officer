@@ -24,9 +24,11 @@ ThemeData buildSahyogTheme() {
     ),
     cardTheme: CardThemeData(
       color: Colors.white,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+        side: const BorderSide(color: Color(0xFFE4E7EC)),
+      ),
       surfaceTintColor: Colors.transparent,
-      side: const BorderSide(color: Color(0xFFE4E7EC)),
     ),
     navigationRailTheme: const NavigationRailThemeData(
       backgroundColor: navy,
