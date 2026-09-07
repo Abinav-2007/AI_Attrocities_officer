@@ -1,0 +1,10 @@
+{
+  "description": "Connects users to relevant websites quickly and efficiently, streamlining access to information for individuals and businesses alike.",
+  "robots": {
+    "index": false
+  },
+  "accessibility": {
+    "addBypassLinks": false,
+    "ignoreReducedMotion": false
+  }
+}
