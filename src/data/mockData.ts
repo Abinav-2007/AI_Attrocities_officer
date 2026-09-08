@@ -11,6 +11,18 @@ export const districts = [
   { id: 'nanded', name: 'Nanded', risk: 'High', distress: 63, beneficiaries: 534, highRisk: 91, coverage: 65, trend: +5.4, successRate: 63, activeCases: 112 },
 ];
 
+// Helper to format numbers with units
+export const formatters = {
+  beneficiaries: (n: number) => `${n.toLocaleString()} beneficiaries`,
+  cases: (n: number) => `${n.toLocaleString()} cases`,
+  score: (n: number) => `${n} points`,
+  percentage: (n: number) => `${n}%`,
+  days: (n: number) => `${n} days`,
+  hours: (n: number) => `${n} hours`,
+  people: (n: number) => `${n.toLocaleString()} people`,
+  crores: (n: number) => `₹${n} Cr`,
+};
+
 export const states = [
   { id: 'maharashtra', name: 'Maharashtra', risk: 'High', distress: 62, beneficiaries: 12482, highRiskPct: 10.3, coverage: 78, trend: -2.1 },
   { id: 'uttarpradesh', name: 'Uttar Pradesh', risk: 'Critical', distress: 74, beneficiaries: 18421, highRiskPct: 16.2, coverage: 61, trend: +5.2 },

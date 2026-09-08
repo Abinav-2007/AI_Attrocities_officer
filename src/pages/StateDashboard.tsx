@@ -24,11 +24,12 @@ export default function StateDashboard() {
       />
 
       {/* KPI Row */}
-      <div className="grid grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         <KpiCard
           icon={<Users className="w-4 h-4" />}
           title="Total Beneficiaries"
           value="12,482"
+          unit=" people"
           trend={8.4}
           trendLabel="vs prev. month"
           sparkData={[9800, 10200, 10800, 11100, 11600, 12000, 12482]}
@@ -37,24 +38,15 @@ export default function StateDashboard() {
         />
         <KpiCard
           icon={<AlertTriangle className="w-4 h-4" />}
-          title="High Risk"
+          title="High Risk Cases"
           value="1,284"
+          unit=" cases"
           trend={-5.2}
           trendLabel="vs prev. month"
           sparkData={[1600, 1520, 1450, 1410, 1380, 1310, 1284]}
           color="#ef4444"
           invert
-          tooltip="Survivors with a distress score above 70, requiring immediate intervention."
-        />
-        <KpiCard
-          icon={<Activity className="w-4 h-4" />}
-          title="Medium Risk"
-          value="3,761"
-          trend={2.1}
-          trendLabel="vs prev. month"
-          sparkData={[3400, 3450, 3500, 3580, 3620, 3700, 3761]}
-          color="#f59e0b"
-          tooltip="Survivors with distress score 45–69. Requires monitoring and scheduled support."
+          tooltip="Survivors with a distress score above 70 points, requiring immediate intervention."
         />
         <KpiCard
           icon={<Shield className="w-4 h-4" />}
@@ -71,12 +63,13 @@ export default function StateDashboard() {
           icon={<TrendingDown className="w-4 h-4" />}
           title="Avg. Distress Score"
           value="46.8"
+          unit=" points"
           trend={-3.4}
           trendLabel="vs prev. month"
           sparkData={[54, 52, 51, 50, 49, 48, 46.8]}
           color="#7c3aed"
           invert
-          tooltip="State-wide mean distress score (0–100). Lower is better. Calculated from weekly survivor check-ins."
+          tooltip="State-wide mean distress score (0-100 points). Lower is better. Calculated from weekly survivor check-ins."
         />
       </div>
 
@@ -116,7 +109,7 @@ export default function StateDashboard() {
                       <Badge label={d.risk} size="xs" />
                     </div>
                     <div className="flex items-center gap-2 mt-0.5">
-                      <span className="text-xs text-slate-500 font-mono">Score: {d.distress}</span>
+                      <span className="text-xs text-slate-500 font-mono">{d.distress} points</span>
                       <Trend value={d.trend} invert size="xs" />
                     </div>
                   </div>
@@ -130,15 +123,15 @@ export default function StateDashboard() {
 
       {/* Trend Chart */}
       <Card>
-        <SectionHeader title="Monthly Distress Trend" subtitle="State-wide average distress score — March 2024 to March 2025" />
+        <SectionHeader title="Monthly Distress Trend" subtitle="State-wide average — March 2024 to March 2025" />
         <ResponsiveContainer width="100%" height={200}>
           <LineChart data={monthlyTrend}>
             <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
             <XAxis dataKey="month" tick={{ fontSize: 11, fill: '#94a3b8' }} axisLine={false} tickLine={false} />
-            <YAxis domain={[40, 60]} tick={{ fontSize: 11, fill: '#94a3b8' }} axisLine={false} tickLine={false} />
+            <YAxis domain={[40, 60]} tick={{ fontSize: 11, fill: '#94a3b8' }} axisLine={false} tickLine={false} label={{ value: 'Distress Score (points)', angle: -90, position: 'insideLeft', style: { fontSize: 11, fill: '#94a3b8' } }} />
             <Tooltip
               contentStyle={{ background: '#fff', border: '1px solid #e2e8f0', borderRadius: '8px', fontSize: 12 }}
-              formatter={(v: number) => [v, 'Avg Distress']}
+              formatter={(v: number) => [`${v} points`, 'Avg Distress']}
             />
             <Line type="monotone" dataKey="distress" stroke="#2457a8" strokeWidth={2} dot={false} />
           </LineChart>

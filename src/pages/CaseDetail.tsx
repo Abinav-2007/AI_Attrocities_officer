@@ -1,8 +1,8 @@
 import { useParams, useNavigate } from 'react-router';
-import { ArrowLeft, CheckCircle, UserCheck, AlertTriangle, ArrowUpRight, XCircle, Brain } from 'lucide-react';
-import { PageHeader, Card, SectionHeader, Badge, Btn, AIBadge } from '../components/ui';
+import { ArrowLeft, CheckCircle, UserCheck, AlertTriangle, XCircle, Brain } from 'lucide-react';
+import { PageHeader, Card, SectionHeader, Badge, Btn, AIBadge, DistressScoreBar } from '../components/ui';
 import { puncheDistressTrend } from '../data/mockData';
-import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, ReferenceLine } from 'recharts';
 
 const shapFactors = [
   { label: 'Threat-related keywords', value: 15, color: '#ef4444' },
@@ -46,24 +46,29 @@ export default function CaseDetail() {
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 mb-6">
         {[
           { label: 'Masked Name', value: 'S-2847-F' },
-          { label: 'Age', value: '34' },
+          { label: 'Age', value: '34 years' },
           { label: 'District', value: 'Nagpur' },
           { label: 'Case Type', value: 'Physical Assault' },
           { label: 'Legal Stage', value: 'Trial' },
-          { label: 'Distress Score', value: '84', highlight: true },
+          { label: 'Days in Trial', value: '184 days', highlight: true },
         ].map(m => (
           <div key={m.label} className="bg-white rounded-xl border border-slate-200 p-3">
-            <div className="text-[10px] text-slate-400 mb-1">{m.label}</div>
-            <div className={`text-sm font-semibold ${m.highlight ? 'text-red-600' : 'text-slate-800'} font-mono`}>{m.value}</div>
+            <div className="text-[10px] text-slate-600 font-medium mb-1">{m.label}</div>
+            <div className={`text-sm font-semibold ${m.highlight ? 'text-orange-600' : 'text-slate-900'}`}>{m.value}</div>
           </div>
         ))}
       </div>
+
+      {/* Distress Score Bar - High Visibility */}
+      <Card className="mb-6">
+        <DistressScoreBar score={84} />
+      </Card>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
         {/* Distress Timeline */}
         <div className="lg:col-span-2">
           <Card>
-            <SectionHeader title="Distress Score Timeline" subtitle="Score trend — last 23 days" action={
+            <SectionHeader title="Distress Score Timeline" subtitle="23-day trend" action={
               <div className="flex gap-1">
                 <Btn variant="ghost" size="xs">7d</Btn>
                 <Btn variant="ghost" size="xs">30d</Btn>
@@ -74,8 +79,13 @@ export default function CaseDetail() {
               <LineChart data={puncheDistressTrend}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
                 <XAxis dataKey="day" tick={{ fontSize: 10, fill: '#94a3b8' }} axisLine={false} tickLine={false} />
-                <YAxis domain={[55, 90]} tick={{ fontSize: 10, fill: '#94a3b8' }} axisLine={false} tickLine={false} />
-                <Tooltip contentStyle={{ background: '#fff', border: '1px solid #e2e8f0', borderRadius: '8px', fontSize: 12 }} />
+                <YAxis domain={[55, 90]} tick={{ fontSize: 10, fill: '#94a3b8' }} axisLine={false} tickLine={false} label={{ value: 'Score (points)', angle: -90, position: 'insideLeft', style: { fontSize: 11, fill: '#94a3b8' } }} />
+                <Tooltip 
+                  contentStyle={{ background: '#fff', border: '1px solid #e2e8f0', borderRadius: '8px', fontSize: 12 }}
+                  formatter={(value: number) => [`${value} points`, 'Distress Score']}
+                />
+                <ReferenceLine y={75} stroke="#ef4444" strokeDasharray="3 3" label={{ value: 'Critical (75)', position: 'right', fill: '#ef4444', fontSize: 10 }} />
+                <ReferenceLine y={60} stroke="#f59e0b" strokeDasharray="3 3" label={{ value: 'High (60)', position: 'right', fill: '#f59e0b', fontSize: 10 }} />
                 <Line type="monotone" dataKey="score" stroke="#ef4444" strokeWidth={2.5} dot={{ fill: '#ef4444', r: 3 }} />
               </LineChart>
             </ResponsiveContainer>
@@ -84,38 +94,46 @@ export default function CaseDetail() {
 
         {/* Explainable AI */}
         <div>
-          <Card className="bg-slate-900 text-white border-slate-800 h-full">
+          <Card className="h-full border-blue-100 bg-blue-50">
             <div className="flex items-center gap-2 mb-3">
-              <Brain className="w-4 h-4 text-blue-400" />
-              <span className="text-sm font-semibold">Why this score?</span>
+              <Brain className="w-4 h-4 text-blue-600" />
+              <span className="text-sm font-semibold text-slate-900">Why this score?</span>
             </div>
-            <div className="flex items-center justify-between mb-4">
-              <span className="text-slate-400 text-xs">Distress Score</span>
-              <span className="text-3xl font-bold text-red-400 font-mono">84</span>
+            <div className="flex items-center justify-between mb-4 pb-3 border-b border-blue-100">
+              <span className="text-sm font-medium text-slate-700">Current Distress</span>
+              <span className="text-3xl font-bold text-red-600 font-mono">84 pts</span>
             </div>
-            <div className="space-y-2.5 mb-4">
+            <div className="space-y-3 mb-4">
               {shapFactors.map(f => (
                 <div key={f.label} className="flex items-center gap-2">
                   <div className="flex-1 min-w-0">
-                    <div className="text-[11px] text-slate-300 mb-1 truncate">{f.label}</div>
-                    <div className="bg-slate-800 rounded-full h-1.5 overflow-hidden">
-                      <div className="h-full rounded-full" style={{ width: `${(f.value / 15) * 100}%`, backgroundColor: f.color }} />
+                    <div className="text-xs text-slate-800 font-semibold mb-1">{f.label}</div>
+                    <div className="bg-blue-100 rounded-full h-2 overflow-hidden">
+                      <div
+                        className="h-full rounded-full"
+                        style={{ width: `${(f.value / 15) * 100}%`, backgroundColor: f.color }}
+                      />
                     </div>
                   </div>
-                  <span className="text-xs font-mono text-slate-300 flex-shrink-0">+{f.value}</span>
+                  <span className="text-xs font-mono font-bold text-slate-900 flex-shrink-0">+{f.value} pts</span>
                 </div>
               ))}
             </div>
-            <div className="border-t border-slate-700 pt-3">
-              <p className="text-[11px] text-slate-400 leading-relaxed italic">
+            <div className="border-t border-blue-100 pt-3 space-y-2">
+              <p className="text-xs text-slate-800 leading-relaxed italic">
                 "Score increased primarily due to reported threat, increased fear-related language and reduced engagement over the last week."
               </p>
-              <div className="mt-2 flex flex-wrap gap-1.5">
-                <span className="text-[10px] bg-blue-900/60 text-blue-300 px-2 py-0.5 rounded-full">AI-generated explanation</span>
-                <span className="text-[10px] bg-slate-800 text-slate-400 px-2 py-0.5 rounded-full">Confidence: 91%</span>
-                <span className="text-[10px] bg-amber-900/60 text-amber-300 px-2 py-0.5 rounded-full">Human review required</span>
+              <div className="flex flex-wrap gap-1.5">
+                <span className="text-[11px] bg-blue-600 text-white px-2 py-0.5 rounded-full font-medium">
+                  AI-generated
+                </span>
+                <span className="text-[11px] bg-slate-700 text-white px-2 py-0.5 rounded-full font-medium">
+                  91% confidence
+                </span>
               </div>
-              <p className="text-[10px] text-slate-600 mt-2">Not a medical diagnosis. This is a risk indicator to support officer decision-making.</p>
+              <p className="text-[11px] text-slate-600 leading-relaxed">
+                Not a medical diagnosis. Risk indicator for officer decision-making.
+              </p>
             </div>
           </Card>
         </div>
@@ -131,9 +149,9 @@ export default function CaseDetail() {
                 <span className="text-sm font-semibold text-slate-800">{r.type}</span>
                 <Badge label={r.priority} size="xs" />
               </div>
-              <p className="text-xs text-slate-500 mb-2 leading-relaxed">{r.why}</p>
-              <div className="flex items-center gap-2 text-[10px] text-slate-400 mb-3">
-                <span>{r.dept}</span>
+              <p className="text-xs text-slate-700 mb-2 leading-relaxed">{r.why}</p>
+              <div className="flex items-center gap-2 text-[10px] text-slate-600 mb-3">
+                <span className="font-medium">{r.dept}</span>
                 <span>·</span>
                 <Badge label={r.status} size="xs" />
               </div>
@@ -157,11 +175,11 @@ export default function CaseDetail() {
         <div className="space-y-1">
           {interventionHistory.map((h, i) => (
             <div key={i} className="flex items-start gap-4 py-3 border-b border-slate-50 last:border-0">
-              <div className="w-24 flex-shrink-0 text-[11px] text-slate-400 font-mono pt-0.5">{h.date}</div>
-              <div className="w-1.5 h-1.5 rounded-full bg-blue-400 flex-shrink-0 mt-1.5"></div>
+              <div className="w-24 flex-shrink-0 text-[11px] text-slate-600 font-mono pt-0.5">{h.date}</div>
+              <div className="w-1.5 h-1.5 rounded-full bg-blue-500 flex-shrink-0 mt-1.5"></div>
               <div className="flex-1">
-                <div className="text-sm font-medium text-slate-800">{h.action}</div>
-                <div className="text-xs text-slate-500">{h.officer} · {h.dept}</div>
+                <div className="text-sm font-medium text-slate-900">{h.action}</div>
+                <div className="text-xs text-slate-700">{h.officer} · {h.dept}</div>
               </div>
               <Badge label={h.outcome} size="xs" />
             </div>

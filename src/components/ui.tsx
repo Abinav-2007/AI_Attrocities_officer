@@ -144,13 +144,61 @@ export function AIBadge({ confidence }: { confidence: number }) {
   );
 }
 
-// Distress score pill
-export function DistressScore({ score }: { score: number }) {
-  const color = score >= 75 ? '#ef4444' : score >= 60 ? '#f97316' : score >= 45 ? '#f59e0b' : '#22c55e';
+// Distress score pill with enhanced visibility
+export function DistressScore({ score, showLabel = false }: { score: number; showLabel?: boolean }) {
+  const color = score >= 75 ? '#b91c1c' : score >= 60 ? '#c2410c' : score >= 45 ? '#b45309' : '#15803d';
+  const label = score >= 75 ? 'Critical' : score >= 60 ? 'High' : score >= 45 ? 'Medium' : 'Low';
+
   return (
-    <span className="inline-flex items-center gap-1 font-mono text-xs font-semibold tabular-nums" style={{ color }}>
-      {score}
-    </span>
+    <div className="inline-flex flex-col gap-1">
+      <span className="inline-flex items-center gap-1.5 font-mono text-sm font-bold tabular-nums" style={{ color }}>
+        {score} points
+      </span>
+      {showLabel && (
+        <span className="text-xs font-medium text-slate-700">{label} Risk</span>
+      )}
+    </div>
+  );
+}
+
+// Horizontal distress score bar with high visibility
+export function DistressScoreBar({ score, className = '' }: { score: number; className?: string }) {
+  const getColor = (s: number) => {
+    if (s >= 75) return { bg: 'bg-red-600', text: 'text-red-800', label: 'Critical', border: 'border-red-300' };
+    if (s >= 60) return { bg: 'bg-orange-500', text: 'text-orange-800', label: 'High', border: 'border-orange-300' };
+    if (s >= 45) return { bg: 'bg-amber-500', text: 'text-amber-800', label: 'Medium', border: 'border-amber-300' };
+    return { bg: 'bg-emerald-600', text: 'text-emerald-800', label: 'Low', border: 'border-emerald-300' };
+  };
+
+  const colors = getColor(score);
+
+  return (
+    <div className={className}>
+      <div className="flex items-center justify-between mb-2">
+        <span className="text-sm font-semibold text-slate-900">Distress Score</span>
+        <div className="flex items-center gap-2">
+          <span className={`text-lg font-bold font-mono ${colors.text}`}>{score} points</span>
+          <Badge label={colors.label} size="xs" />
+        </div>
+      </div>
+      <div className={`relative bg-slate-200 rounded-full h-4 overflow-hidden border-2 ${colors.border}`}>
+        <div
+          className={`h-full ${colors.bg} transition-all duration-500 ease-out flex items-center justify-end pr-2`}
+          style={{ width: `${score}%` }}
+        >
+          {score > 15 && (
+            <span className="text-[10px] font-bold text-white drop-shadow">{score}</span>
+          )}
+        </div>
+      </div>
+      <div className="flex justify-between mt-1.5 text-[11px] text-slate-600 font-mono font-medium">
+        <span>0</span>
+        <span>25</span>
+        <span>50</span>
+        <span>75</span>
+        <span>100</span>
+      </div>
+    </div>
   );
 }
 

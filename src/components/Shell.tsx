@@ -1,25 +1,22 @@
 import { useState } from 'react';
 import { NavLink, useNavigate, Outlet } from 'react-router';
 import {
-  LayoutDashboard, MapPin, Users, Bell, BarChart2, Wrench,
-  FileText, BookOpen, Settings, HelpCircle, LogOut, ChevronDown,
-  Search, Globe, RefreshCw, Activity, Scale, TrendingUp, Building2, X, Menu
+  LayoutDashboard, Users, Bell, BarChart2, Wrench,
+  FileText, Settings, HelpCircle, LogOut, ChevronDown,
+  Search, Globe, Activity, Scale, TrendingUp, Menu,
 } from 'lucide-react';
 import { SearchModal } from './SearchModal';
 import { NotificationPanel } from './NotificationPanel';
 
 const navItems = [
   { icon: LayoutDashboard, label: 'Dashboard', to: '/' },
-  { icon: MapPin, label: 'Districts / States', to: '/districts' },
   { icon: Users, label: 'Victims & Cases', to: '/cases' },
   { icon: Bell, label: 'Alerts', to: '/alerts' },
   { icon: BarChart2, label: 'Analytics', to: '/analytics' },
   { icon: Wrench, label: 'Resource Allocation', to: '/resources' },
   { icon: Activity, label: 'Case Progress', to: '/case-progress' },
   { icon: FileText, label: 'Reports', to: '/reports' },
-  { icon: BookOpen, label: 'Policy Insights', to: '/policy' },
   { icon: Scale, label: 'Act-wise Analysis', to: '/act-wise' },
-  { icon: Building2, label: 'Inter-Ministry', to: '/inter-ministry' },
   { icon: TrendingUp, label: 'Audit Trail', to: '/audit' },
   { icon: Settings, label: 'Settings', to: '/settings' },
 ];
